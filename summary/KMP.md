@@ -38,3 +38,12 @@ https://blog.csdn.net/sunnianzhong/article/details/8802559
 综上，令j=next[j-1]为每步的最优解，且为全局的最优解。
 
 
+#### 最终优化
+以上的结论与代码已经足够实现目标了，但也有一点足以优化的地方。
+目标：aaaacaaaab
+模板：aaaab
+         i
+         j
+当ij在如上位置时，j=next[j],但是arr[next[j]]==arr[j]，我们可以轻易发现
+即使j=next[j]，此时也一定无法匹配上，因为arr[i]!=arr[j]==arr[next[j]]
+所以可以在更新j前对arr[j]是否等于arr[next[j]]进行判断，如果等于，则另j=next[next[j]],并一直判断，直到两者不相等或j=0。
