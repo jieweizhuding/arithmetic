@@ -47,3 +47,61 @@ https://blog.csdn.net/sunnianzhong/article/details/8802559
 当ij在如上位置时，j=next[j],但是arr[next[j]]==arr[j]，我们可以轻易发现
 即使j=next[j]，此时也一定无法匹配上，因为arr[i]!=arr[j]==arr[next[j]]
 所以可以在更新j前对arr[j]是否等于arr[next[j]]进行判断，如果等于，则另j=next[next[j]],并一直判断，直到两者不相等或j=0。
+
+
+
+可以看例题leetcode 28
+写代码时最好使用例子a b a b c a b a b d辅助索引的判断
+```C++
+class Solution {
+public:
+    //可以使用a b a b c a b a b d
+    //       0 0 1 2 0 1 2 3 4 i
+    //我们在考虑第i位时，比较其与第v[i-1]位(index为4->c)，发现不同
+    //那么我们知道v[i]>4,用同样的方法考虑v[v[i-1]-1]->v[3]=2
+    //再考虑index=2处，以此类推，直到相等或发现v[i]=0
+    void get_next(string s,vector<int>& v){
+        int i=1,j=0;
+        v[0]=0;
+        while(i<s.size()){
+            if(s[i]==s[v[i-1]]){
+                v[i]=v[i-1]+1;
+            }else{
+                j=v[i-1]-1;
+                while(j>=0){
+                    if(s[i]==s[v[j]]){
+                        v[i]=v[j]+1;
+                        break;
+                    }else{
+                        j=v[j]-1;
+                    }
+                }
+                if(j<0)v[i]=0;
+            }
+            i++;
+        }
+    }
+    int strStr(string haystack, string needle) {
+        vector<int> next(needle.size());
+        get_next(needle,next);
+
+        int i=0,j=0;
+        while(i<haystack.size()&&j<needle.size()){
+            if(haystack[i]==needle[j]){
+                i++;
+                j++;
+            }else{
+                if(j==0){
+                    i++;
+                    continue;
+                }
+                j=next[j-1];
+            }
+        }
+        
+        if(j==needle.size()){
+            return i-j;
+        }else return -1;
+    }
+};
+```
